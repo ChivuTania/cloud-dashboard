@@ -1,0 +1,3 @@
+2026-08-20 
+	— Stack: Python/FastAPI, quotes in JSON, no DB. 
+	Reason: minimize app effort, maximize platform learning.

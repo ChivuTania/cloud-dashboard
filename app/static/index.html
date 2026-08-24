@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Cloud Dashboard</title>
+</head>
+<body>
+  <h1>My Dashboard</h1>
+
+  <div class="panel">
+    <h2>Quote of the day</h2>
+    <p id="quote">loading...</p>
+  </div>
+
+  <div class="panel">
+    <h2>Daily links</h2>
+    <a href="https://portal.azure.com">Azure Portal</a><br>
+    <a href="https://github.com">GitHub</a>
+  </div>
+
+  <script>
+    fetch("/api/quote")
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("quote").textContent = data.text + " — " + data.author;
+        });
+  </script>
+</body>
+</html>

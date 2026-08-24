@@ -1,6 +1,7 @@
 import json
 from datetime import date
 from pathlib import Path
+from fastapi.staticfiles import StaticFiles
 
 from fastapi import FastAPI
 
@@ -16,3 +17,5 @@ def health():
 def quote_of_the_day():
     index = date.today().toordinal() % len(QUOTES)
     return QUOTES[index]
+
+app.mount("/", StaticFiles(directory="static", html=True), name="static")

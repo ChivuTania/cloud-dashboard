@@ -1,6 +1,4 @@
-
 # Learning project: Cloud Dashboard
-
 
 **v1:** daily motivational quote + daily links, served locally.
 
@@ -12,24 +10,20 @@
 
 ## First run (after cloning)
 
-````
-	python -m venv .venv
-	.\.venv\Scripts\Activate.ps1
-	pip install -r app\requirements.txt
-	cd app
-	fastapi dev main.py
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r app\requirements.txt
+cd app
+fastapi dev main.py
 ```
 
 ## Subsequent runs
 
-```
-	.\.venv\Scripts\Activate.ps1
-	cd app
-	fastapi dev main.py
+```powershell
+.\.venv\Scripts\Activate.ps1
+cd app
+fastapi dev main.py
 ```
 
 Dashboard: http://127.0.0.1:8000/
-```
-
-
-

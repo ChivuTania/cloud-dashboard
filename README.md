@@ -13,7 +13,7 @@
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -r app\requirements.txt
+python -m pip install -r app/requirements.txt
 cd app
 fastapi dev main.py
 ```

@@ -5,7 +5,7 @@
   <title>Cloud Dashboard - Azure Edition </title>
 </head>
 <body>
-  <h1>My Dashboard - Conflict drill</h1>
+  <h1>Tania's Cloud Dashboard</h1>
 
   <div class="panel">
     <h2>Quote of the day</h2>
@@ -18,12 +18,28 @@
     <a href="https://github.com">GitHub</a>
   </div>
 
+  <div class="panel" id="weather-panel">
+    <h2>Weather</h2>
+    <p id="weather-text">Loading…</p>
+  </div>
+
   <script>
     fetch("/api/quote")
         .then(response => response.json())
         .then(data => {
             document.getElementById("quote").textContent = data.text + " — " + data.author;
         });
+
+    fetch('/api/weather')
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(w => {
+        document.getElementById('weather-text').textContent =
+          `${w.city}: ${w.temperature}°C, ${w.condition}, wind ${w.wind} km/h`;
+      })
+      .catch(() => {
+        document.getElementById('weather-text').textContent = 'Weather unavailable';
+      });
   </script>
+
 </body>
 </html>

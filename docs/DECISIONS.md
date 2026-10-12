@@ -6,8 +6,12 @@
 		->trade off: editing quotes.json requires a restart (the dev server does it automatically; in production, a redeploy)
 
 
-1026-08-24:
+2026-08-24:
 	- Stack (frontend): static HTML file served by FastAPI, calling the backend via fetch
+
+2026-10-12:
+	- Open-Meteo as the API used for weather pannel, called from the backend
+	- Location set using environment variables
 
 
 

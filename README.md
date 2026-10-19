@@ -27,3 +27,20 @@ fastapi dev main.py
 ```
 
 Dashboard: http://127.0.0.1:8000/
+
+## Configuration
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `WEATHER_LAT` | `44.43` | Weather panel latitude |
+| `WEATHER_LON` | `26.10` | Weather panel longitude |
+| `WEATHER_CITY` | `Bucharest` | Label shown on the panel |
+
+## Build and run the container
+
+```bash
+docker build -t cloud-dashboard:<tag> app
+docker run -d -p 8080:8000 cloud-dashboard:<tag>
+```
+
+The app listens on port **8000** inside the container.

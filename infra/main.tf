@@ -10,3 +10,11 @@ resource "azurerm_log_analytics_workspace" "dashboard" {
   sku                 = "PerGB2018"
   retention_in_days   = 30
 }
+
+resource "azurerm_container_registry" "dashboard" {
+  name                = "clouddashprodweuacr"
+  resource_group_name = azurerm_resource_group.dashboard.name
+  location            = azurerm_resource_group.dashboard.location
+  sku                 = "Basic"
+  admin_enabled       = false
+}

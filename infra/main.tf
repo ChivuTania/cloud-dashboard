@@ -18,3 +18,15 @@ resource "azurerm_container_registry" "dashboard" {
   sku                 = "Basic"
   admin_enabled       = false
 }
+
+resource "azurerm_user_assigned_identity" "dashboard" {
+  name                = "clouddash-prod-weu-id"
+  resource_group_name = azurerm_resource_group.dashboard.name
+  location            = azurerm_resource_group.dashboard.location
+}
+
+resource "azurerm_role_assignment" "acr_pull" {
+  scope                = azurerm_container_registry.dashboard.id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_user_assigned_identity.dashboard.principal_id
+}

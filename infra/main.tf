@@ -30,3 +30,10 @@ resource "azurerm_role_assignment" "acr_pull" {
   role_definition_name = "AcrPull"
   principal_id         = azurerm_user_assigned_identity.dashboard.principal_id
 }
+
+resource "azurerm_container_app_environment" "dashboard"{
+  name = "clouddash-prod-weu-cae"
+  location = azurerm_resource_group.dashboard.location
+  resource_group_name = azurerm_resource_group.dashboard.name
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.dashboard.id
+}

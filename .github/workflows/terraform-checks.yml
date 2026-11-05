@@ -1,0 +1,30 @@
+name: Terraform checks
+
+on:
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: infra
+    
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@4
+      
+      - name: install Terraform
+        uses: hashicorp/setup-terraform@3
+        with:
+         terraform_version: 1.13.3
+
+      - name: Check formatting
+        run: terraform fmt -check
+
+      - name: Init without backend
+        run: terraform init -backend=false
+      
+      - name: Validate
+        run: terraform validate

@@ -4,5 +4,6 @@ terraform {
     storage_account_name = "tfstateweuclouddashboard"
     container_name       = "tfstate"
     key                  = "clouddash-prod.tfstate"
+    use_azuread_auth     = true
   }
 }

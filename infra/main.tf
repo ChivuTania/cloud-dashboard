@@ -1,6 +1,10 @@
 resource "azurerm_resource_group" "dashboard" {
   name     = "clouddash-prod-weu-rg"
   location = "westeurope"
+
+  tags = {
+    managed_by = "terraform"
+  }
 }
 
 resource "azurerm_log_analytics_workspace" "dashboard" {

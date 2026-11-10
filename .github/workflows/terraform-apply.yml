@@ -10,7 +10,44 @@ permissions:
   contents: read
 
 jobs:
+  plan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
+    
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v4
+    
+    - name: Log in to Azure with OIDC
+      uses: azure/login@v2
+      with:
+        client-id: ${{ vars.AZURE_CLIENT_ID }}
+        tenant-id: ${{ vars.AZURE_TENANT_ID }}
+        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+    
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.13.3
+
+    - name: Init
+      run: terraform init
+
+    - name: Plan
+      run: terraform plan -out=tfplan
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfplan
+        path: infra/tfplan
+        retention-days: 1
+
+
   apply:
+    needs: plan
     runs-on: ubuntu-latest
     environment: production
 
@@ -37,5 +74,11 @@ jobs:
       - name: Init
         run: terraform init
 
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: infra
+
       - name: apply
-        run: terraform apply -auto-approve
+        run: terraform apply tfplan

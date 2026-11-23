@@ -1,7 +1,9 @@
-name: Image build
+name: IRelease
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
 
 permissions:
   id-token: write
@@ -27,12 +29,12 @@ jobs:
       - name: Log in to the registry
         run: az acr login --name clouddashprodweuacr
 
-      - name: Build and push
+      - name: Build and push version
         id: push
         run: |
           LOGIN_SERVER=$(az acr show --name clouddashprodweuacr --query loginServer -o tsv)
           TAG=${GITHUB_SHA::7}
-          IMAGE="$LOGIN_SERVER/cloud-dashboard:$TAG"
+          IMAGE="$LOGIN_SERVER/cloud-dashboard:$GITHUB_REF_NAME"
           docker build -t $IMAGE app 
           docker push $IMAGE
           echo "Pushed $IMAGE"
@@ -51,10 +53,10 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       
-      - name: Deploy to Container app
+      - name: Deploy the version
         run: |
           az containerapp update \
             --name clouddash-prod-weu-ca \
             --resource-group clouddash-prod-weu-rg \
             --image "${{ needs.build.outputs.image }}" \
-            --revision-suffix "${GITHUB_SHA::7}"
+            --revision-suffix "${GITHUB_REF_NAME//./-}"

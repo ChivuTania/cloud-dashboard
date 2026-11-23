@@ -56,4 +56,5 @@ jobs:
           az containerapp update \
             --name clouddash-prod-weu-ca \
             --resource-group clouddash-prod-weu-rg \
-            --image "${{ needs.build.outputs.image }}"
+            --image "${{ needs.build.outputs.image }}" \
+            --revision-suffix "${GITHUB_SHA::7}"

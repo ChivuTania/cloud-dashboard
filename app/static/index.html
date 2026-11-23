@@ -1,45 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Cloud Dashboard - Azure Edition </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cloud Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <h1>Tania's Cloud Dashboard</h1>
+  <main class="frame">
+    <header>
+      <h1>Tania's Cloud Dashboard</h1>
+      <div id="clock"></div>
+    </header>
 
-  <div class="panel">
-    <h2>Quote of the day</h2>
-    <p id="quote">loading...</p>
-  </div>
+    <section class="grid grid-hero">
+      <div class="card weather">
+        <div class="card-label">
+          <span id="weather-city">Weather</span>
+          <i id="weather-icon" class="ti ti-cloud" aria-hidden="true"></i>
+        </div>
+        <div class="temp" id="weather-temp">--</div>
+        <div class="condition" id="weather-condition">Loading…</div>
+        <div class="meta">
+          <span><i class="ti ti-wind" aria-hidden="true"></i> <span id="weather-wind">--</span></span>
+          <span><i class="ti ti-clock" aria-hidden="true"></i> <span id="weather-updated">--</span></span>
+        </div>
+      </div>
 
-  <div class="panel">
-    <h2>Daily links</h2>
-    <a href="https://portal.azure.com">Azure Portal</a><br>
-    <a href="https://github.com">GitHub</a>
-  </div>
+      <div class="card quote">
+        <div class="card-label">
+          <span>Quote of the day</span>
+          <i class="ti ti-quote" aria-hidden="true"></i>
+        </div>
+        <blockquote id="quote-text">Loading…</blockquote>
+        <div class="author" id="quote-author"></div>
+      </div>
+    </section>
 
-  <div class="panel" id="weather-panel">
-    <h2>Weather</h2>
-    <p id="weather-text">Loading…</p>
-  </div>
+    <section class="card links grid">
+      <div class="card-label"><span>Daily links</span></div>
+      <div class="tiles">
+        <a class="tile" href="https://portal.azure.com" target="_blank" rel="noopener">
+          <i class="ti ti-cloud-computing" style="color:#85b7eb" aria-hidden="true"></i>Azure portal
+        </a>
+        <a class="tile" href="https://github.com/ChivuTania/cloud-dashboard" target="_blank" rel="noopener">
+          <i class="ti ti-brand-github" style="color:#e6e8f0" aria-hidden="true"></i>GitHub
+        </a>
+        <a class="tile" href="https://github.com/ChivuTania/cloud-dashboard/actions" target="_blank" rel="noopener">
+          <i class="ti ti-player-play" style="color:#5dcaa5" aria-hidden="true"></i>Actions
+        </a>
+        <a class="tile" href="https://portal.azure.com/#view/Microsoft_Azure_CostManagement/Menu/~/overview" target="_blank" rel="noopener">
+          <i class="ti ti-receipt" style="color:#ef9f27" aria-hidden="true"></i>Cost
+        </a>
+      </div>
+    </section>
+
+    <section class="grid grid-two">
+      <div class="placeholder"><i class="ti ti-chart-line" aria-hidden="true"></i> Requests this week · coming in Phase 3</div>
+      <div class="placeholder"><i class="ti ti-coin" aria-hidden="true"></i> Cost this month · coming in Phase 3</div>
+    </section>
+  </main>
 
   <script>
-    fetch("/api/quote")
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("quote").textContent = data.text + " — " + data.author;
-        });
+    // Header clock: today's date and time, refreshed every 30 seconds
+    function updateClock() {
+      const now = new Date();
+      const date = now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+      const time = now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+      document.getElementById("clock").textContent = `${date} · ${time}`;
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
 
-    fetch('/api/weather')
+    // Quote panel
+    fetch("/api/quote")
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(w => {
-        document.getElementById('weather-text').textContent =
-          `${w.city}: ${w.temperature}°C, ${w.condition}, wind ${w.wind} km/h`;
+      .then(q => {
+        document.getElementById("quote-text").textContent = q.text;
+        document.getElementById("quote-author").textContent = "— " + q.author;
       })
       .catch(() => {
-        document.getElementById('weather-text').textContent = 'Weather unavailable';
+        document.getElementById("quote-text").textContent = "Quote unavailable";
+      });
+
+    // Weather panel: pick an icon from the condition text
+    function weatherIcon(condition) {
+      const c = condition.toLowerCase();
+      if (c.includes("thunder")) return "ti-cloud-storm";
+      if (c.includes("snow"))    return "ti-snowflake";
+      if (c.includes("rain") || c.includes("drizzle") || c.includes("shower")) return "ti-cloud-rain";
+      if (c.includes("fog"))     return "ti-mist";
+      if (c.includes("clear"))   return "ti-sun";
+      return "ti-cloud";
+    }
+
+    fetch("/api/weather")
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(w => {
+        document.getElementById("weather-city").textContent = "Weather · " + w.city;
+        document.getElementById("weather-temp").textContent = Math.round(w.temperature) + "°C";
+        document.getElementById("weather-condition").textContent = w.condition;
+        document.getElementById("weather-wind").textContent = Math.round(w.wind) + " km/h";
+        document.getElementById("weather-updated").textContent = "updated " + w.observed_at.slice(11, 16);
+        document.getElementById("weather-icon").className = "ti " + weatherIcon(w.condition);
+      })
+      .catch(() => {
+        document.getElementById("weather-condition").textContent = "Weather unavailable";
       });
   </script>
-
 </body>
 </html>

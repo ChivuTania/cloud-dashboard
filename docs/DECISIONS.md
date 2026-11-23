@@ -23,3 +23,9 @@
 
 	- State isolation: Tf state lives in its own rg (the config that uses the state must never manage the state’s storage, or a destroy could wipe the record of what exists). Protections: delete lock, blob versioning + soft delete, pipeline gets blob-data access on the state container only.
 
+2026-11-23:
+	- Pipeline identity has AcrPush on clouddashprodweuacr (manual, like its other roles; the identity lives outside Terraform).
+
+	- Image tag owned by the release pipeline; Terraform ignores image after creation (if you haven’t already added this one).
+
+	- terraform-apply.yml runs only on changes to infra/** or itself.

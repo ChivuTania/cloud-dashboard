@@ -46,7 +46,7 @@ resource "azurerm_container_app" "dashboard" {
   name                         = "clouddash-prod-weu-ca"
   resource_group_name          = azurerm_resource_group.dashboard.name
   container_app_environment_id = azurerm_container_app_environment.dashboard.id
-  revision_mode                = "Single"
+  revision_mode                = "Multiple"
 
   identity {
     type         = "UserAssigned"
@@ -85,6 +85,7 @@ resource "azurerm_container_app" "dashboard" {
   lifecycle {
     ignore_changes = [
       template[0].container[0].image,
+      ingress[0].traffic_weight,
     ]
   }
 
